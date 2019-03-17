@@ -154,6 +154,12 @@ module LogStash module Inputs class Redis < LogStash::Inputs::Threadable
   # private
   def connect
     redis = new_redis_instance
+	slaveof = redis.config(:get, 'slaveof')
+	unless slaveof['slaveof'].empty?
+		redis.close
+		@host = slaveof['slaveof'].chomp(' 6379')
+		redis = new_redis_instance
+	end
 
     # register any renamed Redis commands
     if @command_map.any?
