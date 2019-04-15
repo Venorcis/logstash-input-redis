@@ -154,10 +154,10 @@ module LogStash module Inputs class Redis < LogStash::Inputs::Threadable
   # private
   def connect
     redis = new_redis_instance
-	slaveof = redis.config(:get, 'slaveof')
-	unless slaveof['slaveof'].empty?
+	replicaof = redis.config(:get, 'replicaof')
+	unless replicaof['replicaof'].empty?
 		redis.close
-		@host = slaveof['slaveof'].chomp(' 6379')
+		@host = replicaof['replicaof'].chomp(' 6379')
 		redis = new_redis_instance
 	end
 
